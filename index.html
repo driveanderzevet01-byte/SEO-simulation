@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Simulator - Marketing Strategy</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --bg: #f1f3f4;
+            --text-main: #202124;
+            --text-muted: #5f6368;
+            --border: #dadce0;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        .hidden { display: none !important; }
+        
+        /* Typography */
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        h2 { font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
+        h3 { font-size: 16px; margin-bottom: 10px; color: var(--primary); }
+        p { line-height: 1.5; color: var(--text-muted); }
+        
+        /* Forms & Inputs */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+            font-family: inherit; font-size: 14px; box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        
+        /* Buttons */
+        button {
+            background: var(--primary); color: white; border: none; padding: 12px 24px;
+            font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: 600;
+            transition: background 0.2s; display: inline-block;
+        }
+        button:hover { background: #1557b0; }
+        
+        /* Layouts */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .split-view { display: flex; gap: 30px; margin-top: 20px; }
+        .split-left { flex: 1; }
+        .split-right { flex: 1; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+        
+        /* Illustration Mockup */
+        .illustration-box {
+            background: #f1f3f4; border-radius: 12px; padding: 20px; position: relative; margin: 20px auto; width: 90%; max-width: 500px; border: 1px solid #ccc;
+        }
+        .ill-ad { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative;}
+        .ill-link { font-size: 12px; color: #5f6368; margin-bottom: 5px;}
+        .ill-headline { font-size: 18px; color: #1a73e8; margin-bottom: 5px;}
+        .ill-desc { font-size: 14px; color: #4d5156; margin-bottom: 15px;}
+        .ill-promo { font-size: 14px; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;}
+        .ill-tag { background: #333; color: white; font-size: 12px; padding: 3px 8px; border-radius: 4px; position: absolute; z-index: 10;}
+        .tag-link { top: 30px; right: 20px; }
+        .tag-headline { top: 65px; right: 20px; }
+        .tag-desc { top: 105px; right: 20px; }
+        .tag-promo { bottom: 15px; left: 20px; }
+        .tag-discount { bottom: 15px; right: 20px; }
+
+        /* SEO Ad Preview (Student Layout) */
+        .ad-preview { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 15px; font-family: Arial, sans-serif; }
+        .ad-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .ad-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 10px; overflow: hidden;}
+        .ad-company { font-size: 14px; font-weight: 500; color: #202124; }
+        .ad-link { font-size: 12px; color: #202124; }
+        .ad-headline { color: #1a0dab; font-size: 20px; margin: 5px 0; cursor: pointer; }
+        .ad-description { color: #4d5156; font-size: 14px; line-height: 1.4; margin-bottom: 10px; }
+        .ad-promo { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .ad-promo-icon { width: 16px; height: 16px; fill: #5f6368; }
+
+        /* Image Uploads */
+        .preview-img-rect { width: 100%; height: 150px; border: 2px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; margin-top: 10px;}
+        .preview-img-rect img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Google Results Page */
+        .search-bar { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: 24px; padding: 10px 20px; margin-bottom: 30px; box-shadow: 0 1px 6px rgba(32,33,36,.28); }
+        .search-bar input { border: none; flex: 1; font-size: 16px; outline: none; }
+        .search-results { display: flex; flex-direction: column; gap: 25px; }
+        .result-item { max-width: 600px; }
+        .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .result-icon { width: 26px; height: 26px; border-radius: 50%; background: #eee; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px;}
+        .result-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .result-site-name { font-size: 14px; color: #202124; }
+        .result-url { font-size: 12px; color: #4d5156; }
+        .result-title { color: #1a0dab; font-size: 20px; margin: 5px 0; cursor: pointer; }
+        .result-snippet { color: #4d5156; font-size: 14px; line-height: 1.58; }
+        
+        /* Result Product Image */
+        .result-product-img { max-width: 100%; width: 300px; height: auto; border-radius: 8px; margin-top: 10px; border: 1px solid var(--border); display: block; }
+
+        .student-result { border: 2px dashed #1a73e8; padding: 15px; border-radius: 8px; background: #f8fbff; position: relative; }
+        .student-badge { position: absolute; top: -10px; right: 10px; background: #1a73e8; color: white; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
+
+        /* Print Settings */
+        @media print {
+            body { background: white; padding: 0; display: block; }
+            .container { box-shadow: none; padding: 0; max-width: 100%; border: none; }
+            .no-print, .student-badge, .search-bar { display: none !important; }
+            .student-result { border: 1px solid black; background: white; page-break-inside: avoid; }
+            .result-title { color: black; }
+            #print-info { display: block !important; margin-bottom: 40px; border-bottom: 2px dashed #ccc; padding-bottom: 20px; }
+            #page-results { display: block !important; }
+            .result-product-img { border: 1px solid #999; max-width: 250px; }
+            .print-data-group { margin-bottom: 10px; }
+            .print-data-group strong { display: inline-block; width: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- ==================== PAGE 1: IDENTITY ==================== -->
+    <div id="page-identity">
+        <h1>SEO Simulator</h1>
+        <p>Please enter your details to begin.</p>
+        
+        <div class="form-group">
+            <label>Student Name</label>
+            <input type="text" id="student-name" placeholder="e.g., John Doe">
+        </div>
+        <div class="form-group">
+            <label>Study Program</label>
+            <input type="text" id="student-program" placeholder="e.g., Marketing Communications">
+        </div>
+        <div class="form-group">
+            <label>Group</label>
+            <select id="student-group">
+                <option value="">-- Select Group --</option>
+                <option value="Group 1">Group 1</option>
+                <option value="Group 2">Group 2</option>
+                <option value="Group 3">Group 3</option>
+                <option value="Group 4">Group 4</option>
+                <option value="Group 5">Group 5</option>
+                <option value="Group 6">Group 6</option>
+                <option value="Group 7">Group 7</option>
+                <option value="Group 8">Group 8</option>
+                <option value="Group 9">Group 9</option>
+                <option value="Group 10">Group 10</option>
+            </select>
+        </div>
+        
+        <button onclick="goToIntro()">Submit & Next</button>
+    </div>
+
+    <!-- ==================== PAGE 2: INTRO ==================== -->
+    <div id="page-intro" class="hidden">
+        <h1>Understanding SEO Components</h1>
+        
+        <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+            <div style="flex: 1;">
+                <h2>Off-Page SEO</h2>
+                <p><strong>Company Name & Description:</strong> The brand identity. Establishes trust and authority for search engines.</p>
+                <p><strong>Product Keywords:</strong> The exact terms your target audience types into search engines.</p>
+            </div>
+            <div style="flex: 1;">
+                <h2>On-Page SEO</h2>
+                <p><strong>Product Name, Link & Headline:</strong> The main title and URL structure. Must contain primary keywords.</p>
+                <p><strong>Ad Description:</strong> The meta description. Compelling and uses keywords naturally.</p>
+                <p><strong>Promo Theme & Discount:</strong> Visual hooks and incentives that increase Click-Through Rate (CTR).</p>
+            </div>
+        </div>
+
+        <!-- CSS Generated Illustration -->
+        <div class="illustration-box">
+            <div class="ill-ad">
+                <div class="ill-tag tag-link">link</div>
+                <div class="ill-link">🔗 https://www.instagram.com/oninaspad</div>
+                
+                <div class="ill-tag tag-headline">headline</div>
+                <div class="ill-headline">onigiri - nasi padang</div>
+                
+                <div class="ill-tag tag-desc">description</div>
+                <div class="ill-desc">ONINASPAD, onigiri nasi padang. very healthy for you.<br>ONINASPAD.</div>
+                
+                <div class="ill-promo">
+                    🏷️ <strong>Black Friday</strong> · $5 off ONI-NAS-PAD
+                </div>
+                
+                <div class="ill-tag tag-promo">promo theme</div>
+                <div class="ill-tag tag-discount">discount + code</div>
+            </div>
+        </div>
+        
+        <div style="text-align: right; margin-top: 20px;">
+            <button onclick="goToWorkspace()">Next: Create Your SEO</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 3: WORKSPACE ==================== -->
+    <div id="page-workspace" class="hidden">
+        <h1>SEO Workspace</h1>
+        <p>Fill in the components and watch the live preview on the right.</p>
+        
+        <div class="split-view">
+            <!-- INPUTS -->
+            <div class="split-left">
+                <h3>Off-Page SEO</h3>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" id="in-company" placeholder="e.g., Oninaspad" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Company Description</label>
+                    <input type="text" id="in-company-desc" placeholder="e.g., Healthy Japanese Food" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Product Keywords (Separate by comma)</label>
+                    <input type="text" id="in-keywords" placeholder="e.g., onigiri, nasi padang, healthy" oninput="updateLivePreview()">
+                </div>
+
+                <h3>On-Page SEO</h3>
+                <div class="form-group">
+                    <label>Product Name (URL Slug only)</label>
+                    <input type="text" id="in-product-link" placeholder="e.g., onigiri-nasi-padang" oninput="updateLivePreview()">
+                </div>
+                
+                <label>Headline Alternatives (Max 10 words)</label>
+                <div class="grid-3" style="margin-bottom: 15px;">
+                    <input type="text" class="headline-input" placeholder="Alt 1" oninput="updateLivePreview()">
+                    <input type="text" class="headline-input" placeholder="Alt 2" oninput="updateLivePreview()">
+                    <input type="text" class="headline-input" placeholder="Alt 3" oninput="updateLivePreview()">
+                </div>
+
+                <label>Description Alternatives (Max 30 words)</label>
+                <div class="grid-3" style="margin-bottom: 15px;">
+                    <input type="text" class="desc-input" placeholder="Alt 1" oninput="updateLivePreview()">
+                    <input type="text" class="desc-input" placeholder="Alt 2" oninput="updateLivePreview()">
+                    <input type="text" class="desc-input" placeholder="Alt 3" oninput="updateLivePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>Promo Theme</label>
+                    <input type="text" id="in-promo-theme" placeholder="e.g., Black Friday" oninput="updateLivePreview()">
+                </div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Discount Amount</label>
+                        <input type="text" id="in-discount" placeholder="e.g., $5" oninput="updateLivePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Redeem Code</label>
+                        <input type="text" id="in-code" placeholder="e.g., ONI5" oninput="updateLivePreview()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Company Icon (Image File)</label>
+                    <input type="file" id="in-icon" accept="image/*" onchange="loadImage(event, 'icon')">
+                </div>
+                <div class="form-group">
+                    <label>Product Image (Image File)</label>
+                    <input type="file" id="in-image" accept="image/*" onchange="loadImage(event, 'image')">
+                </div>
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="split-right">
+                <h3 style="margin-top:0;">Live Preview</h3>
+                
+                <div class="ad-preview">
+                    <div class="ad-header">
+                        <div class="ad-icon" id="live-icon-container">
+                            <img id="live-icon" src="" style="display:none;">
+                            <span id="live-icon-text">ICON</span>
+                        </div>
+                        <div>
+                            <div class="ad-company" id="live-company">Company Name</div>
+                            <div class="ad-link">https://www.instagram.com/<span id="live-link">product-link</span></div>
+                        </div>
+                    </div>
+                    <div class="ad-headline" id="live-headline">Ad Headline Appears Here</div>
+                    <div class="ad-description" id="live-desc">Description appears here. Make sure it's compelling and matches your keywords.</div>
+                    
+                    <div class="ad-promo">
+                        <svg class="ad-promo-icon" viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                        <span id="live-promo">Promo Theme</span> · <span id="live-discount">Discount</span> · <span id="live-code">CODE</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-top:0;">Product Image Preview</h3>
+                    <div class="preview-img-rect">
+                        <img id="live-image" src="" style="display: none;">
+                        <span id="live-image-text" style="color: #888; font-size: 12px;">No Image Uploaded</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: right; margin-top: 30px;">
+            <button onclick="submitSEO()">Finish & Search</button>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 4: SEARCH RESULTS ==================== -->
+    <div id="page-results" class="hidden">
+        
+        <!-- Print Only Summary Data -->
+        <div id="print-info" style="display: none;">
+            <h2 style="border:none; margin-bottom: 15px; font-size: 22px;">SEO Simulation Summary</h2>
+            <div class="print-data-group"><strong>Name:</strong> <span id="p-name"></span></div>
+            <div class="print-data-group"><strong>Program:</strong> <span id="p-program"></span></div>
+            <div class="print-data-group"><strong>Group:</strong> <span id="p-group"></span></div>
+            <div class="print-data-group"><strong>Date & Time:</strong> <span id="p-time"></span></div>
+            <br>
+            <div class="print-data-group"><strong>Company Name:</strong> <span id="p-company"></span></div>
+            <div class="print-data-group"><strong>Company Desc:</strong> <span id="p-company-desc"></span></div>
+            <div class="print-data-group"><strong>Keywords:</strong> <span id="p-keywords"></span></div>
+            <div class="print-data-group"><strong>Product Link:</strong> <span id="p-link"></span></div>
+            <div class="print-data-group"><strong>Headlines:</strong> <span id="p-headlines"></span></div>
+            <div class="print-data-group"><strong>Descriptions:</strong> <span id="p-descs"></span></div>
+            <div class="print-data-group"><strong>Promo Theme:</strong> <span id="p-promo"></span></div>
+            <div class="print-data-group"><strong>Discount:</strong> <span id="p-discount"></span></div>
+            <div class="print-data-group"><strong>Code:</strong> <span id="p-code"></span></div>
+            <br>
+            <div class="print-data-group"><strong>Final Position:</strong> <span id="p-position" style="font-weight:bold; font-size: 18px;"></span></div>
+            <br>
+            <p style="text-align:center; color:#666; font-style:italic;">--- Below is the resulting Search Engine Page ---</p>
+        </div>
+
+        <div class="search-bar no-print">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="#5f6368"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="search-query-display" readonly>
+        </div>
+
+        <div class="search-results" id="results-container">
+            <!-- Results injected via JS -->
+        </div>
+
+        <div style="margin-top: 40px; text-align: center;" class="no-print">
+            <button onclick="window.print()">Print / Save as PDF</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let studentData = {};
+    let uploadedIcon = '';
+    let uploadedImage = '';
+
+    function goToIntro() {
+        const name = document.getElementById('student-name').value;
+        const program = document.getElementById('student-program').value;
+        const group = document.getElementById('student-group').value;
+
+        if (!name || !program || !group) {
+            alert("Please fill in all identity fields.");
+            return;
+        }
+
+        studentData = { name, program, group };
+        
+        document.getElementById('page-identity').classList.add('hidden');
+        document.getElementById('page-intro').classList.remove('hidden');
+    }
+
+    function goToWorkspace() {
+        document.getElementById('page-intro').classList.add('hidden');
+        document.getElementById('page-workspace').classList.remove('hidden');
+    }
+
+    function loadImage(event, type) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgUrl = e.target.result;
+                
+                if (type === 'icon') {
+                    uploadedIcon = imgUrl;
+                    document.getElementById('live-icon').src = imgUrl;
+                    document.getElementById('live-icon').style.display = 'block';
+                    document.getElementById('live-icon-text').style.display = 'none';
+                } else {
+                    uploadedImage = imgUrl;
+                    document.getElementById('live-image').src = imgUrl;
+                    document.getElementById('live-image').style.display = 'block';
+                    document.getElementById('live-image-text').style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function updateLivePreview() {
+        document.getElementById('live-company').innerText = document.getElementById('in-company').value || 'Company Name';
+        document.getElementById('live-link').innerText = document.getElementById('in-product-link').value || 'product-link';
+        
+        const h1 = document.querySelectorAll('.headline-input')[0].value;
+        document.getElementById('live-headline').innerText = h1 || 'Ad Headline Appears Here';
+        
+        const d1 = document.querySelectorAll('.desc-input')[0].value;
+        document.getElementById('live-desc').innerText = d1 || 'Description appears here. Make sure it\'s compelling.';
+        
+        document.getElementById('live-promo').innerText = document.getElementById('in-promo-theme').value || 'Promo Theme';
+        document.getElementById('live-discount').innerText = document.getElementById('in-discount').value || 'Discount';
+        document.getElementById('live-code').innerText = document.getElementById('in-code').value || 'CODE';
+    }
+
+    function submitSEO() {
+        const company = document.getElementById('in-company').value || 'My Company';
+        const companyDesc = document.getElementById('in-company-desc').value || '-';
+        const keywordsRaw = document.getElementById('in-keywords').value;
+        const productLink = document.getElementById('in-product-link').value || 'product-link';
+        
+        const headlines = Array.from(document.querySelectorAll('.headline-input')).map(i => i.value).filter(v => v);
+        const descriptions = Array.from(document.querySelectorAll('.desc-input')).map(i => i.value).filter(v => v);
+        
+        const promo = document.getElementById('in-promo-theme').value || 'Promo';
+        const discount = document.getElementById('in-discount').value || 'Discount';
+        const code = document.getElementById('in-code').value || 'CODE';
+
+        if (!keywordsRaw || headlines.length === 0 || descriptions.length === 0) {
+            alert("Please fill in at least 1 headline, 1 description, and your keywords.");
+            return;
+        }
+
+        const keywords = keywordsRaw.toLowerCase().split(',').map(k => k.trim());
+        
+        // Scoring logic
+        let bestHeadline = headlines[0];
+        let bestDesc = descriptions[0];
+        let highestScore = 0;
+
+        headlines.forEach(h => {
+            descriptions.forEach(d => {
+                let score = 0;
+                let textToAnalyze = (h + " " + d).toLowerCase();
+                keywords.forEach(k => {
+                    if (textToAnalyze.includes(k)) score += 10;
+                });
+                keywords.forEach(k => {
+                    if (h.toLowerCase().includes(k)) score += 5;
+                });
+                if (score > highestScore) {
+                    highestScore = score;
+                    bestHeadline = h;
+                    bestDesc = d;
+                }
+            });
+        });
+
+        let position = 5;
+        if (highestScore >= 30) position = 1;
+        else if (highestScore >= 15) position = 2;
+        else if (highestScore >= 10) position = 3;
+        else if (highestScore >= 5) position = 4;
+
+        // Populate Print Data Summary
+        document.getElementById('p-name').innerText = studentData.name;
+        document.getElementById('p-program').innerText = studentData.program;
+        document.getElementById('p-group').innerText = studentData.group;
+        document.getElementById('p-time').innerText = new Date().toLocaleString();
+        
+        document.getElementById('p-company').innerText = company;
+        document.getElementById('p-company-desc').innerText = companyDesc;
+        document.getElementById('p-keywords').innerText = keywordsRaw;
+        document.getElementById('p-link').innerText = "https://www.instagram.com/" + productLink;
+        document.getElementById('p-headlines').innerText = headlines.join(" | ");
+        document.getElementById('p-descs').innerText = descriptions.join(" | ");
+        document.getElementById('p-promo').innerText = promo;
+        document.getElementById('p-discount').innerText = discount;
+        document.getElementById('p-code').innerText = code;
+        
+        document.getElementById('p-position').innerText = `#${position} out of 5`;
+        document.getElementById('search-query-display').value = keywords[0] || 'search query';
+
+        // English Dummy Data
+        const dummyResults = [
+            { title: "How to Make Onigiri (Japanese Rice Balls)", url: "https://www.okonomikitchen.com/main-dishes", desc: "Aug 27, 2019 — Onigiri is SUPER easy to make. Simply put, you just need to take the cooked rice and..." },
+            { title: "Onigiri Nasi Padang #homecook #innovation", url: "https://www.instagram.com/mhdrenzy", desc: "Middle eastern food here is absolutely delicious! Everything is the best according to us, what do you guys think?" },
+            { title: "Easy Japanese-style Onigiri Rice Balls to Make at Home", url: "https://www.halodoc.com/artikel/onigiri-nasi-kepal", desc: "Feb 14, 2025 — The deliciousness of onigiri lies not only in the fluffy rice, but also in the various fillings..." },
+            { title: "Japanese style rice dishes onigiri", url: "https://cookpad.com/cari/olahan-nasi", desc: "large warm white rice (500 g) • Kobe Nasi Uduk Seasoning • nori • ready-to-eat sausage, sliced..." },
+            { title: bestHeadline, url: "https://www.instagram.com/" + productLink, desc: bestDesc, isStudent: true, company: company, promo: promo, discount: discount, code: code }
+        ];
+
+        const finalResults = [];
+        let dummyIndex = 0;
+        
+        for (let i = 1; i <= 5; i++) {
+            if (i === position) {
+                finalResults.push(dummyResults[4]);
+            } else {
+                finalResults.push(dummyResults[dummyIndex]);
+                dummyIndex++;
+            }
+        }
+
+        const container = document.getElementById('results-container');
+        container.innerHTML = '';
+
+        finalResults.forEach((res, index) => {
+            const isStudent = res.isStudent;
+            let html = `<div class="result-item ${isStudent ? 'student-result' : ''}">`;
+            if (isStudent) html += `<div class="student-badge no-print">Your Ad (Position #${index + 1})</div>`;
+            
+            html += `<div class="result-header"><div class="result-icon">`;
+            
+            if (isStudent && uploadedIcon) {
+                html += `<img src="${uploadedIcon}">`;
+            } else {
+                html += `<span style="font-size:10px; color:#555;">Icon</span>`;
+            }
+
+            html += `</div><div>
+                        <div class="result-site-name">${isStudent ? res.company : res.title.split(' ')[0]}</div>
+                        <div class="result-url">${res.url}</div>
+                    </div>
+                </div>
+                <div class="result-title">${res.title}</div>
+                <div class="result-snippet">${res.desc}</div>`;
+            
+            // Add Image under description for Student Result
+            if (isStudent && uploadedImage) {
+                html += `<img src="${uploadedImage}" class="result-product-img">`;
+            }
+
+            if (isStudent) {
+                html += `<div style="margin-top:10px; font-weight:bold; font-size:14px; color:#202124;">
+                    ${res.promo} · ${res.discount} OFF · Code: ${res.code}
+                </div>`;
+            }
+            
+            html += `</div>`;
+            container.innerHTML += html;
+        });
+
+        document.getElementById('page-workspace').classList.add('hidden');
+        document.getElementById('page-results').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
